@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import ShopView from "@/views/ShopView.vue";
 
 Vue.use(VueRouter)
 
@@ -8,15 +8,46 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: ShopView
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/shop',
+    name: 'shop',
+    components: {
+      default: ShopView
+    },
+    alias: '/shop/home',
+    children: [
+      {
+        path: 'login',
+        name: 'login',
+        components : {
+          shopmain: () => import('@/views/ShopLogin.vue')
+        }
+      },
+      {
+        path: 'buy',
+        name: 'buy',
+        components: {
+          shopmain: ()=> import('@/views/ShopBuy.vue')
+        }
+      },
+      {
+        path: 'pay/:orderId',
+        name: 'pay',
+        components: {
+          shopmain:() => import('@/views/ShopPay.vue')
+        },
+        props: route => ({ orderId: route.params.orderId })
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        components: {
+          shopmain: () => import('@/views/ShopOrders.vue')
+        }
+      }
+    ]
   }
 ]
 
