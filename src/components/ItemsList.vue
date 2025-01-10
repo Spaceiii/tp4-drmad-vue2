@@ -1,18 +1,20 @@
 <template>
   <div>
     <h1>Les virus</h1>
+    <!--
     <p>Le tableau dans le store : {{ viruses }}</p>
     <p>sous forme de liste avec certains champs</p>
-
+    -->
     <CheckedList
         :data="viruses"
         :fields="['name', 'price', 'stock']"
         :itemCheck="false"
         :checked="[]"
-        :itemButton="{show: true, text: 'Affiche les infos du virus'}"
+        :itemButton="{show: true, text: 'Ajouter'}"
         :listButton="{show: false, text: ''}"
+        :item-amount="true"
         @checked-change="(index) => checkedViruses[index] = !checkedViruses[index]"
-        @item-button-clicked="(index) => printVirusesInfo(index)"
+        @item-button-clicked="addSelectedItemToBasket"
     />
 
     <span>Filtres :</span>
@@ -70,7 +72,7 @@
 import {mapState, mapMutations} from 'vuex'
 import CheckedList from "@/components/CheckList.vue";
 export default {
-  name: 'VirusesView',
+  name: 'ItemsList',
   components: {CheckedList},
   data: () => ({
     priceFilter: 0,
@@ -109,8 +111,8 @@ export default {
   },
   methods: {
     ...mapMutations('shop', ['addItemToBasket']),
-    printVirusesInfo(index) {
-      alert(`Le virus ${this.viruses[index].name} coûte ${this.viruses[index].price} et il en reste ${this.viruses[index].stock}`)
+    addSelectedItemToBasket({index, quantity}) {
+      this.addItemToBasket({item: this.viruses[index], quantity})
     },
     itemButtonClicked({index, quantity}) {
       if (quantity <= 1) return

@@ -16,12 +16,12 @@
             :name="`item-amount-input-${index}`"
             v-model="itemQuantity[index]">
         <button
-            @click="itemButtonClicked"
-            v-if="itemButton.show"
+            @click="itemButtonClicked(index)"
+            v-if="itemButton && itemButton.show"
         >{{ itemButton.text }}</button>
       </li>
     </ul>
-    <button v-if="listButton.show" @click="listButtonClicked">{{ listButton.text }}</button>
+    <button v-if="listButton && listButton.show" @click="listButtonClicked">{{ listButton.text }}</button>
   </div>
 </template>
 

@@ -30,6 +30,7 @@ function getAllViruses() {
 }
 
 function getBasket(user) {
+    if (!user) return { error: 1, status: 404, data: 'Pas d\'utilisateur actif!' }
     let u = shopusers.find(e => e._id === user._id)
     if (!u) return {error: 1, status: 404, data: 'utilisateur non trouvé'}
     if (!u.basket) {
@@ -71,6 +72,7 @@ function setUserBasket(user, basket) {
 }
 
 function resetBasket(user) {
+    if (!user) return { error: 1, status: 404, data: 'Pas d\'utilisateur actif!' }
     let u = shopusers.find(e => e._id === user._id)
     if (!u) return {error: 1, status: 404, data: 'utilisateur non trouvé'}
     u.basket = []
@@ -79,12 +81,13 @@ function resetBasket(user) {
 
 function removeItemFromBasket(user, item) {
     let u = shopusers.find(e => e._id === user._id)
+    console.log(u)
     if (!u) return {error: 1, status: 404, data: 'utilisateur non trouvé'}
     if (!u.basket) return {error: 1, status: 404, data: 'panier non trouvé'}
-    let index = u.basket.findIndex(e => e.id === item.id)
+    let index = u.basket.findIndex(e => e.item._id === item._id)
     if (index === -1) return {error: 1, status: 404, data: 'item non trouvé dans le panier'}
     u.basket.splice(index, 1)
-    return {error: 0, status: 200, data: 'item retiré du panier'}
+    return {error: 0, status: 200, data: item}
 }
 
 function buyBasket(user) {
@@ -105,6 +108,20 @@ function buyBasket(user) {
     return {error: 0, status: 200, data: {uuid}}
 }
 
+function addItemToBasket(user, {amount, item}) {
+    let u = shopusers.find(e => e._id === user._id)
+    if (!u) return {error: 1, status: 404, data: 'utilisateur non trouvé'}
+    if (!u.basket) u.basket = []
+    let index = u.basket.findIndex(e => e.item._id === item._id)
+    if (index === -1) {
+        u.basket.push({item, amount})
+    } else {
+        u.basket[index].amount += amount
+    }
+    console.log(u)
+    return {error: 0, status: 200, data: 'item ajouté au panier'}
+}
+
 function finalizeOrder(user, orderId) {
     let u = shopusers.find(e => e._id === user._id)
     if (!u) return {error: 1, status: 404, data: 'utilisateur non trouvé'}
@@ -122,6 +139,7 @@ export default {
     resetBasket,
     removeItemFromBasket,
     buyBasket,
+    addItemToBasket,
     finalizeOrder,
     setUserBasket
 }

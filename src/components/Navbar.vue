@@ -1,13 +1,13 @@
 <template>
   <nav>
-    <button
+    <router-link
+      :to="title.link"
       v-for="(title, index) in titles"
       :key="index"
       :style="{color: title.color}"
-      @click="$emit('menu-clicked', index)"
     >
       {{title.title}}
-    </button>
+    </router-link>
   </nav>
 </template>
 

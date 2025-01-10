@@ -1,14 +1,15 @@
 <template>
     <div>
       <h1>Login</h1>
-  
-      <span>login</span><input v-model="login">
-      <span>password</span><input v-model="password">
-      <button @click="shopLogin({login, password})">Login</button>
-      <p v-if="shopUser">{{shopUser}}</p>
+
+      <form action="">
+        <span>login</span><input v-model="login">
+        <span>password</span><input v-model="password">
+        <button @click.prevent="logInto">Login</button>
+      </form>
+
     </div>
-  
-  </template>
+</template>
   
   <script>
   
@@ -24,6 +25,10 @@
     },
     methods: {
       ...mapActions('shop', ['shopLogin']),
+      logInto() {
+        this.shopLogin({login: this.login, password: this.password})
+        this.$router.push({name: "buy"})
+      }
     }
   }
   </script>

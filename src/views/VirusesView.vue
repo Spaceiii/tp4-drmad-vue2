@@ -1,18 +1,19 @@
 <template>
     <div>
       <h1>Les virus</h1>
+      <!--
       <p>Le tableau dans le store : {{ viruses }}</p>
+      -->
       <p>sous forme de liste avec certains champs</p>
 
       <CheckedList
         :data="viruses"
         :fields="['name', 'price', 'stock']"
-        :itemCheck="false"
+        :itemCheck="true"
         :checked="[]"
         :itemButton="{show: true, text: 'Affiche les infos du virus'}"
         :listButton="{show: false, text: ''}"
-        @checked-change="(index) => checkedViruses[index] = !checkedViruses[index]"
-        @item-button-clicked="(index) => printVirusesInfo(index)"
+        @item-button-clicked="printVirusesInfo"
       />
 
       <span>Filtres :</span>
@@ -104,7 +105,7 @@
       },
     },
     methods: {
-      printVirusesInfo(index) {
+      printVirusesInfo({index}) {
         alert(`Le virus ${this.viruses[index].name} coûte ${this.viruses[index].price} et il en reste ${this.viruses[index].stock}`)
       }
     }

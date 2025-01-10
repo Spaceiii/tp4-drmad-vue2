@@ -2,7 +2,7 @@
 export default {
   name: "ShopBuy",
   components: {
-    ItemList: () => import('@/components/ItemList'),
+    ItemList: () => import('@/components/ItemsList'),
     BasketList: () => import('@/components/BasketList')
   }
 }

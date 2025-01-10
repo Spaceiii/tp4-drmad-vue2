@@ -7,14 +7,17 @@
 
 <script>
 
+import {mapActions} from "vuex";
+
 export default {
   name: "ShopPay",
   props: {
     orderId: String
   },
   methods: {
+    ...mapActions('shop', ['finalizeOrder']),
     payerCommande() {
-      .finalizeOrder(this.orderId)
+      this.finalizeOrder(this.orderId)
     }
   }
 }

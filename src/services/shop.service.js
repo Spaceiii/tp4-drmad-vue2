@@ -92,6 +92,7 @@ async function removeItemFromBasket(user, item) {
     }
     catch(err) {
         response = {error: 1, status: 404, data: 'erreur réseau, impossible de supprimer l\'item du panier'  }
+        console.error(err)
     }
     return response
 }
@@ -126,12 +127,28 @@ async function finalizeOrder(user, orderId) {
     return response
 }
 
+async function addItemToBasketFromLocalSource(user, basketItem) {
+    return LocalSource.addItemToBasket(user, basketItem);
+}
+
+async function addItemToBasket(user, basketItem) {
+    let response = null;
+    try {
+        response = await addItemToBasketFromLocalSource(user, basketItem)
+    }
+    catch(err) {
+        response = {error: 1, status: 404, data: 'erreur réseau, impossible d\'ajouter l\'item'  }
+    }
+    return response
+}
+
 export default {
     shopLogin,
     getAllViruses,
     getBasket,
     resetBasket,
     removeItemFromBasket,
+    addItemToBasket,
     buyBasket,
     finalizeOrder
 }

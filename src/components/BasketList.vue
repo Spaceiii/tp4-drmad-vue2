@@ -1,10 +1,10 @@
 <template>
   <div>
     <CheckedList
-      :data="basket"
-      :fields="['item', 'amount']"
-      @list-button-clicked="resetBasket"
-      @item-button-clicked="removeItemFromBasket"
+      :data="normalizedBasket"
+      :fields="['name', 'amount']"
+      :item-button="{text: 'supprimer', show: true}"
+      @item-button-clicked="removeItem"
     />
 
     <button @click="resetBasket">Vider le panier</button>
@@ -21,21 +21,29 @@ import ShopService from "@/services/shop.service";
 export default {
   name: "BasketList",
   components:{CheckedList},
+  data: () => ({
+  }),
   computed: {
     ...mapState('shop', ['basket', 'shopUser']),
+    normalizedBasket() { return this.basket.map(it => {return {amount: it.amount, name: it.item.name}})}
   },
   methods: {
-    ...mapActions('shop', ['resetBasket', 'removeItemFromBasket', 'getBasket']),
+    ...mapActions('shop', ['resetBasket', 'removeItemFromBasket', 'getBasket', 'shopLogin']),
     buyBasket() {
       const orderUuid = ShopService.buyBasket()
       if (orderUuid.error === 0) {
         this.resetBasket()
         this.$router.push(`/shop/pay/${orderUuid.data.uuid}`)
       }
+    },
+    removeItem ({index}) {
+      this.removeItemFromBasket(this.basket[index].item)
     }
   },
   mounted() {
-    this.getBasket()
+    this.shopLogin({login: 'drmad', password: 'drmad'}).then(() => {
+      this.getBasket()
+    })
   }
 }
 </script>

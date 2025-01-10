@@ -57,11 +57,11 @@ export default
          * @param {number} quantity - The quantity of the item to add.
          */
         addItemToBasket(state, { item, quantity }) {
-            const existingItem = state.basket.find(it => it.id === item._id);
+            const existingItem = state.basket.find(it => it.item._id === item._id);
             if (existingItem) {
-                existingItem.amount += quantity;
+                existingItem.amount += +quantity;
             } else {
-                state.basket.push({ item, amount: quantity });
+                state.basket.push({ item, amount: +quantity });
             }
         }
     },
@@ -72,9 +72,7 @@ export default
             let response = await ShopService.shopLogin(data)
             if (response.error === 0) {
                 commit('updateShopUser', response.data)
-                await this.$router.push({name: 'buy'})
-            }
-            else {
+            } else {
                 console.log(response.data)
             }
         },
@@ -84,8 +82,8 @@ export default
          * @returns {Promise<Array<Item>>}
          */
         async getAllViruses({commit}) {
-            console.log('récupération des viruses');
             let response = await ShopService.getAllViruses()
+            console.log("récupéré avec succès")
             if (response.error === 0) {
                 commit('updateViruses', response.data)
             }
@@ -105,8 +103,7 @@ export default
             let response = await ShopService.getBasket(state.shopUser)
             if (response.error === 0) {
                 commit('updateBasket', response.data)
-            }
-            else {
+            } else {
                 console.error(response.data)
             }
         },
@@ -122,8 +119,7 @@ export default
             let response = await ShopService.resetBasket(state.shopUser)
             if (response.error === 0) {
                 commit('updateBasket', [])
-            }
-            else {
+            } else {
                 console.error(response.data)
             }
         },
@@ -132,16 +128,35 @@ export default
          * add an item to the basket
          * @param commit
          * @param state
-         * @param item
+         * @param {Item} item
          * @returns {Promise<Array<Item>>}
          */
         async removeItemFromBasket({commit, state}, item) {
             console.log('suppression d\'un item du panier');
             let response = await ShopService.removeItemFromBasket(state.shopUser, item)
             if (response.error === 0) {
-                commit('updateBasket', state.basket.filter(it => it.id !== item._id))
+                commit('updateBasket', state.basket.filter(it => it.item._id !== item._id))
+            } else {
+                console.error(response.data)
             }
-            else {
+        },
+
+
+        /**
+         * add an item to the basket
+         * @param commit
+         * @param state
+         * @param {Item} item
+         * @param {number} quantity
+         * @returns {Promise<void>}
+         */
+        async addItemToBasket({commit, state}, { item, quantity }) {
+            console.log('ajout d\'un item au panier');
+            let response = await ShopService.addItemToBasket(state.shopUser, item, quantity)
+            if (response.error === 0) {
+                commit('addItemToBasket', { item, quantity })
+            } else {
+                console.log("erreur lors de l'ajout de l'item au panier")
                 console.error(response.data)
             }
         },
@@ -151,7 +166,7 @@ export default
          * @param state
          * @param {String} orderId
          */
-        async getOrder({state}, orderId) {
+        async finalizeOrder({state}, orderId) {
             console.log('récupération de la commande');
             let response = await ShopService.finalizeOrder(state.shopUser, orderId)
             if (response.error === 0) {

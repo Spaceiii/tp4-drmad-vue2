@@ -13,9 +13,7 @@ const routes = [
   {
     path: '/shop',
     name: 'shop',
-    components: {
-      default: ShopView
-    },
+    component: ShopView,
     alias: '/shop/home',
     children: [
       {
