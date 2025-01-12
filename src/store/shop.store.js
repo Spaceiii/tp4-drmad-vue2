@@ -54,14 +54,15 @@ export default
          * Adds an item to the basket or updates its quantity if it already exists.
          * @param {Object} state - The Vuex state.
          * @param {Item} item - The item to add to the basket.
-         * @param {number} quantity - The quantity of the item to add.
+         * @param {number} amount - The quantity of the item to add.
          */
-        addItemToBasket(state, { item, quantity }) {
+        mutateItemToBasket(state, { item, amount }) {
             const existingItem = state.basket.find(it => it.item._id === item._id);
+            console.log('amount from mutation', amount)
             if (existingItem) {
-                existingItem.amount += +quantity;
+                existingItem.amount += amount;
             } else {
-                state.basket.push({ item, amount: +quantity });
+                state.basket.push({ item, amount });
             }
         }
     },
@@ -147,14 +148,15 @@ export default
          * @param commit
          * @param state
          * @param {Item} item
-         * @param {number} quantity
+         * @param {number} amount
          * @returns {Promise<void>}
          */
-        async addItemToBasket({commit, state}, { item, quantity }) {
+        async addItemToBasket({commit, state}, { item, amount }) {
             console.log('ajout d\'un item au panier');
-            let response = await ShopService.addItemToBasket(state.shopUser, item, quantity)
+            let response = await ShopService.addItemToBasket(state.shopUser, {item, amount: +amount})
             if (response.error === 0) {
-                commit('addItemToBasket', { item, quantity })
+                commit('mutateItemToBasket', { item, amount: +amount })
+                console.log('item ajouté au panier')
             } else {
                 console.log("erreur lors de l'ajout de l'item au panier")
                 console.error(response.data)

@@ -29,11 +29,13 @@ export default {
   },
   methods: {
     ...mapActions('shop', ['resetBasket', 'removeItemFromBasket', 'getBasket', 'shopLogin']),
-    buyBasket() {
-      const orderUuid = ShopService.buyBasket()
+    async buyBasket() {
+      console.log("buyBasket")
+      const orderUuid = await ShopService.buyBasket(this.shopUser)
+      console.log("orderUuid", orderUuid)
       if (orderUuid.error === 0) {
-        this.resetBasket()
-        this.$router.push(`/shop/pay/${orderUuid.data.uuid}`)
+        await this.resetBasket()
+        await this.$router.push({name: 'pay', params: {orderId: orderUuid.data.uuid}})
       }
     },
     removeItem ({index}) {
@@ -41,9 +43,7 @@ export default {
     }
   },
   mounted() {
-    this.shopLogin({login: 'drmad', password: 'drmad'}).then(() => {
-      this.getBasket()
-    })
+    this.getBasket()
   }
 }
 </script>

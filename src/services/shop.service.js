@@ -142,13 +142,61 @@ async function addItemToBasket(user, basketItem) {
     return response
 }
 
+async function getOrdersFromLocalSource(user) {
+    return LocalSource.getOrders(user);
+}
+
+async function getOrders(user) {
+    let response = null;
+    try {
+        response = await getOrdersFromLocalSource(user)
+    }
+    catch(err) {
+        response = {error: 1, status: 404, data: 'erreur réseau, impossible de récupérer les commandes'  }
+    }
+    return response
+}
+
+async function payOrderFromLocalSource(user, orderId) {
+    return LocalSource.payOrder(user, orderId);
+}
+
+async function payOrder(user, orderId) {
+    let response = null;
+    try {
+        response = await payOrderFromLocalSource(user, orderId)
+    }
+    catch(err) {
+        response = {error: 1, status: 404, data: 'erreur réseau, impossible de payer la commande'  }
+    }
+    return response
+}
+
+async function cancelOrderFromLocalSource(user, orderId) {
+    return LocalSource.cancelOrder(user, orderId);
+}
+
+async function cancelOrder(user, orderId) {
+    let response = null;
+    try {
+        response = await cancelOrderFromLocalSource(user, orderId)
+    }
+    catch(err) {
+        response = {error: 1, status: 404, data: 'erreur réseau, impossible d\'annuler la commande'  }
+    }
+    return response
+}
+
 export default {
     shopLogin,
     getAllViruses,
     getBasket,
+    getOrders,
     resetBasket,
     removeItemFromBasket,
     addItemToBasket,
     buyBasket,
-    finalizeOrder
+    finalizeOrder,
+    payOrder,
+    cancelOrder,
 }

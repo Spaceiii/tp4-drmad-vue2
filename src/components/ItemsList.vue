@@ -59,8 +59,6 @@
           :item-amount="true"
           :item-button="{show: false, text: ''}"
           :list-button="{show: false, text: ''}"
-          @list-button-clicked="listButtonClicked"
-          @item-button-clicked="itemButtonClicked"
           />
     </div>
   </div>
@@ -69,7 +67,7 @@
 
 
 <script>
-import {mapState, mapMutations} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 import CheckedList from "@/components/CheckList.vue";
 export default {
   name: 'ItemsList',
@@ -85,6 +83,7 @@ export default {
   }),
   mounted() {
     this.checkedViruses = Array(this.viruses.length).fill(false);
+    this.shopLogin({login: 'drmad', password: 'drmad'})
   },
   computed: {
     ...mapState('shop', ['viruses']),
@@ -110,12 +109,14 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('shop', ['addItemToBasket']),
+    ...mapActions('shop', ['addItemToBasket', 'shopLogin']),
     addSelectedItemToBasket({index, quantity}) {
-      this.addItemToBasket({item: this.viruses[index], quantity})
+      if (quantity < 1) return
+      console.log('addSelectedItemToBasket', {item: this.viruses[index], amount: quantity})
+      this.addItemToBasket({item: this.viruses[index], amount: quantity})
     },
+    /*
     itemButtonClicked({index, quantity}) {
-      if (quantity <= 1) return
       this.addItemToBasket({item: this.viruses[index], quantity})
     },
     listButtonClicked({quantity}) {
@@ -126,6 +127,8 @@ export default {
       })
       this.checkedViruses.fill(false)
     }
+    */
   },
+
 }
 </script>

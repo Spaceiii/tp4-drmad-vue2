@@ -36,10 +36,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions('shop', ['getAllViruses']),
+    ...mapActions('shop', ['getAllViruses', 'shopLogin']),
   },
   mounted() {
     this.getAllViruses()
+    this.shopLogin({login: 'drmad', password: 'drmad'})
   }
 };
 </script>
